@@ -1,8 +1,24 @@
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from .config import Paths
-from .io import parquet_supported, write_tabular
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+src = ROOT / "src"
+if str(src) not in sys.path:
+    sys.path.insert(0, str(src))
+
+from .config import make_paths
+
+paths = make_paths(ROOT)
+
+
+from ml_baseline.config import Paths
+#from io import parquet_supported, write_tabular
+from ml_baseline.io import write_parquet
+from ml_baseline.io import write_tabular
+
 
 def make_sample_feature_table(*, root: Path | None = None, n_users: int = 50, seed: int = 42) -> Path:
     paths = Paths.from_repo_root() if root is None else Paths(root=root)
@@ -14,7 +30,7 @@ def make_sample_feature_table(*, root: Path | None = None, n_users: int = 50, se
                        "n_orders": rng.integers(1, 10, size=n_users)})
     df["avg_amount"] = rng.normal(10, 3, size=n_users).clip(min=1).round(2)
     df["total_amount"] = (df["n_orders"] * df["avg_amount"]).round(2)
-    df["is_high_value"] = (df["total_amount"] -= 80).astype(int)
+    df["is_high_value"] = (df["total_amount"] >= 80).astype(int)
 
     csv_path = paths.data_processed_dir / "features.csv"
     write_tabular(df, csv_path)
