@@ -4,24 +4,24 @@ from pathlib import Path
 @dataclass(frozen=True)
 class Paths:
     root: Path
+    data: Path
     raw: Path
-    cache: Path
     processed: Path
-    external: Path
+    models: Path
+    reports: Path
+    metrics: Path
 
-def make_paths(root: Path) -> Paths:
-    data =root / "data"
-    return Paths(
-        root= root,
-        raw =data / "raw",
-        cache=data /"cache",
-        processed=data / "processed",
-        external=data / "external"
-    )
+    @classmethod
+    def from_repo_root(cls) -> "Paths":
+        root = Path(__file__).resolve().parents[2]
+        data = root / "data"
 
-
-ROOT = Path.cwd()   
-PROCESSED = ROOT / "data/processed"
-ANALYTICS_FILE = ROOT / "data/processed" / "analytics_table.parquet"
-
-print(ANALYTICS_FILE)
+        return cls(
+            root=root,
+            data=data,
+            raw=data / "raw",
+            processed=data / "processed",
+            models=root / "models",
+            reports=root / "reports",
+            metrics=root / "metrics",
+        )
