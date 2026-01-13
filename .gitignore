@@ -1,0 +1,21 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+experimental/
+
+scratch/
+
+# Temporarily ignore previous weeks
+/W1/
+/W2/
+/W3/
+/W4/
+/datasets/
+/data/
